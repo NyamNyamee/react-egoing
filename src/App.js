@@ -12,6 +12,7 @@ class App extends Component {
 
     this.state = {  // state 지정
       mode: "home",
+      nav_num: 0,
       header: { title: "WWW", content: "World Wide Web" },
       navigation: [
         { id: 1, title: 'HTML', content: "HyperTextMarkupLanguage" },
@@ -28,8 +29,8 @@ class App extends Component {
       title = this.state.welcome.title;
       content = this.state.welcome.content;
     } else if (this.state.mode === 'read') {
-      title = this.state.navigation[0].title;
-      content = this.state.navigation[0].content;
+      title = this.state.navigation[this.state.nav_num].title;
+      content = this.state.navigation[this.state.nav_num].content;
     }
 
     return (
@@ -38,11 +39,12 @@ class App extends Component {
         <Header
           title={this.state.header.title}
           content={this.state.header.content}
-          onClickHeaderTitle={function () {
-            this.setState({
-              mode: "home"
-            });
-          }.bind(this)}>  {/* 이벤트 함수 지정 */}
+          onClickHeaderTitle={
+            function () {
+              this.setState({
+                mode: "home"
+              });
+            }.bind(this)}>  {/* 이벤트 함수 지정 */}
         </Header>
         {/* <header>
           <h1><a href="/" onClick={function (e) {  // 클릭 시 실행할 콜백함수(e는 클릭 이벤트) 설정
@@ -56,7 +58,15 @@ class App extends Component {
           {this.state.header.content}
         </header> */}
         <Navigation
-          list={this.state.navigation}>
+          list={this.state.navigation}
+          onClickNavList={
+            function (id) {
+              this.setState({
+                mode: 'read',
+                nav_num: id
+              })
+            }.bind(this)
+          }>
         </Navigation>
         <Article
           title={title}
