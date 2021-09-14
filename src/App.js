@@ -3,12 +3,16 @@ import './App.css';
 
 import Header from "./components/Header";
 import Navigation from "./components/Navigation";
-import Article from "./components/Article";
+import ReadContent from "./components/ReadContent";
+import CreateContent from "./components/CreateContent";
+import Control from "./components/Control";
 
 class App extends Component {
   /* 렌더링 전에, 생성자로 props에 전달한 state 세팅 */
   constructor(props) {
     super(props);  // props 초기화
+
+    this.max_navigation_id = 3;
 
     this.state = {  // state 지정
       mode: "home",
@@ -24,13 +28,27 @@ class App extends Component {
   }
 
   render() {
-    let title, content = null;
+    let title, content, article = null;
     if (this.state.mode === 'home') {
       title = this.state.welcome.title;
       content = this.state.welcome.content;
+      article = <ReadContent title={title} content={content}></ReadContent>
     } else if (this.state.mode === 'read') {
       title = this.state.navigation[this.state.nav_num].title;
       content = this.state.navigation[this.state.nav_num].content;
+      article = <ReadContent title={title} content={content}></ReadContent>
+    } else if (this.state.mode === 'create') {
+      article = <CreateContent title={title} content={content} onSubmit={function (title, description) {
+        this.max_navigation_id += 1;
+        this.state.navigation.push(  // 우선 state값을 직접 변경하고
+          { id: this.max_navigation_id, title: title, content: description }
+        );
+        this.setState({  // setState에서 바뀐 값을 넣어주기
+          navigation: this.state.navigation
+        });
+      }.bind(this)}></CreateContent>
+    } else if (this.state.mode === 'update') {
+
     }
 
     return (
@@ -68,14 +86,24 @@ class App extends Component {
             }.bind(this)
           }>
         </Navigation>
-        <Article
+        <Control
+          onClickControlList={
+            function (mode) {
+              this.setState({
+                mode: mode
+              });
+            }.bind(this)
+          }>
+        </Control>
+        {/* <ReadContent
           title={title}
           content={content}>
-        </Article>
+        </ReadContent> */}
         {/* <Article
           title="article2"
           content="i do not want to go work">
         </Article> */}
+        {article}
       </div >
     );
   }
