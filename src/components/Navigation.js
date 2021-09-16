@@ -1,6 +1,17 @@
+import { render } from '@testing-library/react';
 import React, { Component } from 'react';
 
 class Navigation extends Component {
+    shouldComponentUpdate(new_props, new_state) {  // render함수 전에 호출되는 함수. return값이 true라면 render()호출, false라면 render()호출X
+        let render_flag = true;
+
+        if (new_props.list === this.props.list) {  // 새로운 props와 기존props가 동일하다면 새로 렌더할 필요가 없음
+            render_flag = false;
+        }
+
+        return render_flag;
+    }
+
     render() {
         let list_navigation_props = this.props.list;  // list라는 props를 가져와서 저장
         // console.log(props_navigation_list);
